@@ -1,0 +1,65 @@
+{% extends 'albums/base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h2>Add Photo</h2>
+                <form method="post" enctype="multipart/form-data" novalidate>
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {% if field.name == 'image' %}
+                            <div class="upload-preview mb-3">
+                                <img id="imagePreview" class="img-preview d-none">
+                            </div>
+                            <input type="file" name="{{ field.name }}" id="{{ field.id_for_label }}" 
+                                   class="form-control" accept="image/*" required 
+                                   onchange="previewImage(this);">
+                        {% else %}
+                            {{ field|addclass:'form-control' }}
+                        {% endif %}
+                        {% if field.errors %}
+                        <div class="alert alert-danger mt-2">
+                            {{ field.errors }}
+                        </div>
+                        {% endif %}
+                        {% if field.help_text %}
+                            <small class="form-text text-muted">{{ field.help_text }}</small>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Upload</button>
+                        <a href="{% url 'album-detail' view.kwargs.pk %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+function previewImage(input) {
+    const preview = document.getElementById('imagePreview');
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+        }
+        
+        reader.readAsDataURL(input.files[0]);
+    } else {
+        preview.classList.add('d-none');
+        preview.src = '';
+    }
+}
+</script>
+{% endblock %}

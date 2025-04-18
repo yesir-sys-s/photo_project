@@ -1,0 +1,157 @@
+{% extends 'albums/base.html' %}
+
+{% block content %}
+<div class="d-flex">
+    <div class="albums-sidebar">
+        <h1 class="mb-4 text-white">My Albums</h1>
+        {% for album in object_list %}
+        <div class="sidebar-album-item mb-3 scroll-fade scroll-stagger" 
+             data-album-id="{{ album.pk }}" 
+             style="--scroll-index: {{ forloop.counter0 }}">
+            <div class="album-text">
+                <h5 class="album-name">{{ album.title }}</h5>
+                <p class="album-meta">{{ album.photos.count }} photos</p>
+            </div>
+            <div class="album-controls">
+                <a href="{% url 'album-detail' album.pk %}" class="btn btn-sm btn-primary">View</a>
+                <a href="{% url 'album-update' album.pk %}" class="btn btn-sm btn-secondary">Edit</a>
+            </div>
+        </div>
+        {% empty %}
+        <div class="alert alert-info">No albums found. Create your first album!</div>
+        {% endfor %}
+    </div>
+    <div class="content-area flex-grow-1">
+        <div class="photo-display">
+            <div class="photo-grid" id="albumPhotos">
+                <!-- Photos will be loaded here -->
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Photo Modal -->
+<div class="photo-modal" id="photoModal">
+    <span class="modal-close">&times;</span>
+    <img class="modal-content" id="modalImage">
+    <div class="modal-caption" id="modalCaption"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const albumCards = document.querySelectorAll('.sidebar-album-item');
+    const photoGrid = document.getElementById('albumPhotos');
+    
+    // Add debounce function
+    function debounce(func, wait) {
+        let timeout;
+        return function(...args) {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => func.apply(this, args), wait);
+        };
+    }
+
+    // Function to load photos
+    const loadPhotos = async (albumId) => {
+        try {
+            const response = await fetch(`/albums/${albumId}/photos/`);
+            const data = await response.json();
+            
+            photoGrid.innerHTML = data.photos.map(photo => `
+                <div class="photo-card">
+                    <div class="card-img-container" onclick="openModal('${photo.image}', '${photo.caption}')">
+                        <img src="${photo.image}" alt="${photo.caption}" class="card-img-top">
+                        <div class="card-overlay">
+                            <p class="caption">${photo.caption}</p>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Error loading photos:', error);
+        }
+    };
+
+    // Debounced version of loadPhotos
+    const debouncedLoadPhotos = debounce(loadPhotos, 300);
+
+    // Add hover handlers to album cards
+    albumCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            // Remove active class from all cards
+            albumCards.forEach(c => c.classList.remove('active'));
+            // Add active class to hovered card
+            card.classList.add('active');
+            
+            const albumId = this.dataset.albumId;
+            debouncedLoadPhotos(albumId);
+        });
+
+        // Handle click events only for controls
+        card.addEventListener('click', function(e) {
+            if (!e.target.closest('.album-controls')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    // Add scroll animation observer
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('visible');
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px'
+    });
+
+    // Observe all scrollable elements
+    document.querySelectorAll('.scroll-fade').forEach(el => observer.observe(el));
+
+    // Photo modal functionality
+    const modal = document.getElementById('photoModal');
+    const modalImg = document.getElementById('modalImage');
+    const modalCaption = document.getElementById('modalCaption');
+    const closeBtn = document.querySelector('.modal-close');
+
+    // Update modal open function
+    window.openModal = function(imgSrc, caption) {
+        modal.style.display = "block";
+        // Small delay to ensure display:block takes effect before adding show class
+        requestAnimationFrame(() => {
+            modal.classList.add('show');
+        });
+        modalImg.src = imgSrc;
+        modalCaption.textContent = caption;
+    }
+
+    // Update modal close function
+    function closeModal() {
+        modal.classList.remove('show');
+        // Wait for fade out animation before hiding
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300);
+    }
+
+    // Update close handlers
+    closeBtn.onclick = closeModal;
+
+    modal.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal();
+        }
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === "block") {
+            closeModal();
+        }
+    });
+});
+</script>
+{% endblock %}

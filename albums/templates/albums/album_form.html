@@ -1,0 +1,51 @@
+{% extends 'albums/base.html' %}
+{% load form_tags %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h2>{% if form.instance.pk %}Edit Album{% else %}New Album{% endif %}</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                        {{ field.errors }}
+                        {{ field|addclass:'form-control' }}
+                    </div>
+                    {% endfor %}
+                    <div class="mt-3">
+                        <button type="submit" class="btn btn-primary">Save</button>
+                        <a href="{% url 'album-list' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        {% if form.instance.pk %}
+        <h3 class="mb-3">Album Photos</h3>
+        <div class="photo-grid">
+            {% for photo in form.instance.photos.all %}
+            <div class="card">
+                <div class="card-img-container">
+                    <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}">
+                    <a href="{% url 'photo-delete' photo.pk %}" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2">
+                        <i class="bi bi-trash"></i>
+                    </a>
+                    <div class="card-overlay">
+                        <p class="caption" data-photo-id="{{ photo.pk }}" contenteditable="true">{{ photo.caption }}</p>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12">
+                <div class="alert alert-info">No photos in this album yet.</div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

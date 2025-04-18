@@ -1,0 +1,34 @@
+{% extends 'albums/base.html' %}
+
+{% block content %}
+<div class="card mb-4">
+    <div class="card-body">
+        <h1>{{ album.title }}</h1>
+        <p>{{ album.description }}</p>
+        <a href="{% url 'photo-create' album.pk %}" class="btn btn-success">Add Photo</a>
+        <a href="{% url 'album-update' album.pk %}" class="btn btn-secondary">Edit Album</a>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for photo in album.photos.all %}
+    <div class="col">
+        <div class="card h-100 album-photo-card">
+            <div class="card-img-container">
+                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}">
+                <a href="{% url 'photo-delete' photo.pk %}" class="btn btn-danger btn-sm photo-delete-btn">
+                    <i class="bi bi-trash"></i>
+                </a>
+                <div class="card-overlay">
+                    <p class="caption">{{ photo.caption }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-12">
+        <div class="alert alert-info">This album is empty. Add some photos!</div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

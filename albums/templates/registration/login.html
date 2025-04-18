@@ -1,0 +1,53 @@
+{% extends 'albums/base.html' %}
+{% load form_tags %}
+{% load static %}
+
+{% block content %}
+<div class="row justify-content-center align-items-center min-vh-100">
+    <div class="col-md-6">
+        <div class="auth-card {% if is_flipped %}flipped{% endif %} glass-effect">
+            <div class="loading-overlay d-none">
+                <div class="spinner-border text-light" role="status">
+                    <span class="visually-hidden">Loading...</span>
+                </div>
+            </div>
+            <div class="card card-front">
+                <div class="card-body p-lg-5">
+                    <div class="text-center mb-4">
+                        <h2 class="display-6 fw-bold text-white mb-3">Welcome Back</h2>
+                        <p class="text-light-50 mb-4">Please enter your credentials to continue</p>
+                    </div>
+                    <form method="post" class="needs-validation">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="form-floating mb-4 position-relative">
+                            {{ field|addclass:'form-control bg-light-10 border-0 text-white' }}
+                            <label for="{{ field.id_for_label }}" class="text-light-50">{{ field.label }}</label>
+                            {% if field.name == 'password' %}
+                            <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-white text-decoration-none pe-3" onclick="togglePassword(this)">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                            {% endif %}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ field.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-light btn-lg hover-scale">Login</button>
+                        </div>
+                    </form>
+                    <p class="mt-4 text-center text-light-50">
+                        Don't have an account? 
+                        <a href="{% url 'register' %}" class="flip-trigger text-white text-decoration-none">
+                            Sign Up <i class="bi bi-arrow-right-short"></i>
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
