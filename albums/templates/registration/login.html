@@ -21,13 +21,15 @@
                         {% csrf_token %}
                         {% for field in form %}
                         <div class="form-floating mb-4 position-relative">
-                            {{ field|addclass:'form-control bg-light-10 border-0 text-white' }}
-                            <label for="{{ field.id_for_label }}" class="text-light-50">{{ field.label }}</label>
-                            {% if field.name == 'password' %}
-                            <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-white text-decoration-none pe-3" onclick="togglePassword(this)">
-                                <i class="bi bi-eye"></i>
-                            </button>
-                            {% endif %}
+                            <div class="position-relative">
+                                {{ field|addclass:'form-control bg-light-10 border-0 text-white floating-input' }}
+                                {% if field.name == 'password' %}
+                                <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-white text-decoration-none pe-3" onclick="togglePassword(this)">
+                                    <i class="bi bi-eye"></i>
+                                </button>
+                                {% endif %}
+                            </div>
+                            <label for="{{ field.id_for_label }}" class="text-light-50 floating-label">{{ field.label }}</label>
                             {% if field.errors %}
                             <div class="invalid-feedback d-block">
                                 {{ field.errors }}
@@ -51,3 +53,5 @@
     </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}{% endblock %}

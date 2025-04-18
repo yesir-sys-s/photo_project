@@ -26,14 +26,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function togglePassword(button) {
-    const passwordField = button.parentElement.querySelector('input');
+    const input = button.closest('.position-relative').querySelector('input');
     const icon = button.querySelector('i');
-    if (passwordField.type === 'password') {
-        passwordField.type = 'text';
+    
+    if (input.type === 'password') {
+        input.type = 'text';
         icon.classList.remove('bi-eye');
         icon.classList.add('bi-eye-slash');
     } else {
-        passwordField.type = 'password';
+        input.type === 'password';
         icon.classList.remove('bi-eye-slash');
         icon.classList.add('bi-eye');
     }

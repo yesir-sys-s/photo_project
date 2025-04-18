@@ -1,34 +1,71 @@
 {% extends 'albums/base.html' %}
+{% load static %}
 
 {% block content %}
-<div class="card mb-4">
-    <div class="card-body">
-        <h1>{{ album.title }}</h1>
-        <p>{{ album.description }}</p>
-        <a href="{% url 'photo-create' album.pk %}" class="btn btn-success">Add Photo</a>
-        <a href="{% url 'album-update' album.pk %}" class="btn btn-secondary">Edit Album</a>
+<div class="glass-effect p-4 mb-4 rounded">
+    <div class="d-flex justify-content-between align-items-center">
+        <div>
+            <h1 class="display-6 fw-bold text-white mb-2">{{ album.title }}</h1>
+            <p class="text-light-50">{{ album.description }}</p>
+        </div>
+        <div class="d-flex gap-2">
+            <a href="{% url 'photo-create' album.pk %}" class="btn btn-light hover-scale">
+                <i class="bi bi-plus-lg me-2"></i>Add Photo
+            </a>
+            <a href="{% url 'album-update' album.pk %}" class="btn btn-outline-light">
+                <i class="bi bi-pencil me-2"></i>Edit Album
+            </a>
+        </div>
     </div>
 </div>
 
-<div class="row row-cols-1 row-cols-md-3 g-4">
+<div class="photo-grid">
     {% for photo in album.photos.all %}
-    <div class="col">
-        <div class="card h-100 album-photo-card">
-            <div class="card-img-container">
-                <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}">
-                <a href="{% url 'photo-delete' photo.pk %}" class="btn btn-danger btn-sm photo-delete-btn">
-                    <i class="bi bi-trash"></i>
-                </a>
-                <div class="card-overlay">
-                    <p class="caption">{{ photo.caption }}</p>
-                </div>
+    <div class="photo-card">
+        <div class="card-img-container">
+            <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}">
+            <button type="button" class="btn btn-outline-light btn-sm photo-delete-btn" data-bs-toggle="modal" data-bs-target="#photoDeleteModal{{ photo.pk }}">
+                <i class="bi bi-trash"></i>
+            </button>
+            <div class="card-overlay">
+                <p class="caption">{{ photo.caption }}</p>
             </div>
         </div>
     </div>
     {% empty %}
-    <div class="col-12">
-        <div class="alert alert-info">This album is empty. Add some photos!</div>
+    <div class="text-center text-light-50 py-5">
+        <i class="bi bi-images display-1 mb-3"></i>
+        <h3>This album is empty</h3>
+        <p>Start adding some photos to your album!</p>
     </div>
     {% endfor %}
 </div>
+
+<!-- Photo Delete Modals -->
+{% for photo in album.photos.all %}
+<div class="modal fade" id="photoDeleteModal{{ photo.pk }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ photo.pk }}" style="z-index: 1080;">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content glass-effect">
+            <div class="modal-header border-0">
+                <h4 class="modal-title text-white" id="deleteModalLabel{{ photo.pk }}">Delete</h4>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div class="mb-4">
+                    <img src="{{ photo.image.url }}" alt="{{ photo.caption }}" class="img-fluid rounded" style="max-height: 200px;">
+                </div>
+                <h4 class="text-white mb-3">Delete Photo</h4>
+                <p class="text-light-50">Are you sure you want to delete this photo? This action cannot be undone.</p>
+                <div class="d-flex justify-content-center gap-2 mt-4">
+                    <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                    <form method="post" action="{% url 'photo-delete' photo.pk %}" class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">Delete Photo</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
 {% endblock %}

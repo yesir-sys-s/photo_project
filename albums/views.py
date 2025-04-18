@@ -74,10 +74,9 @@ class PhotoCreateView(LoginRequiredMixin, CreateView):
 
 class PhotoDeleteView(LoginRequiredMixin, DeleteView):
     model = Photo
-    template_name = 'albums/photo_confirm_delete.html'
+    http_method_names = ['post', 'delete']  # Only allow POST/DELETE methods
     
     def get_queryset(self):
-        # Only allow deleting photos from user's own albums
         return Photo.objects.filter(album__created_by=self.request.user)
     
     def get_success_url(self):

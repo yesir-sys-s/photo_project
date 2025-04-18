@@ -10,19 +10,16 @@
 }
 
 body {
-  background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/bgg.jpg');
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-  color: var(--text-primary);
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background: linear-gradient(135deg, #1a1c20 0%, #0c0d0f 100%);
+  font-family: 'Inter', sans-serif;
+  color: #fff;
   min-height: 100vh;
 }
 
 /* Modern Navbar */
 .navbar {
   background: rgba(255, 255, 255, 0.05) !important;
-  backdrop-filter: blur(4px);
+  backdrop-filter: blur(10px);
   border-bottom: 1px solid rgba(255, 255, 255, 0.05);
   padding: 1rem;
 }
@@ -52,19 +49,23 @@ body {
 
 .navbar-brand {
   font-weight: 600;
-  color: white !important;
+  color: #fff;
+}
+
+.navbar-brand:hover {
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .nav-link {
   font-weight: 500;
-  color: white !important;
-  transition: all 0.2s ease;
+  color: rgba(255, 255, 255, 0.7);
+  transition: color 0.3s ease;
   border-radius: 0.5rem;
   padding: 0.5rem 1rem !important;
 }
 
 .nav-link:hover {
-  color: white !important;
+  color: #fff;
   background: rgba(255, 255, 255, 0.2);
 }
 
@@ -431,6 +432,21 @@ body {
     opacity: 0;
     transition: opacity 0.3s ease;
     z-index: 2;
+    background: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    padding: 0.25rem 0.5rem;
+}
+
+.card-img-container:hover .photo-delete-btn {
+    opacity: 1;
+}
+
+.photo-delete-btn:hover {
+    background: rgba(220, 53, 69, 0.4);
+    border-color: rgba(220, 53, 69, 0.6);
+    color: #fff;
 }
 
 .album-photo-card:hover .photo-delete-btn {
@@ -618,13 +634,28 @@ body {
 }
 
 .album-controls {
-    position: absolute;
-    right: 1rem;
-    top: 50%;
-    transform: translateY(-50%);
+    position: static;
     opacity: 0;
-    visibility: hidden;
-    transition: all 0.2s ease;
+    transition: opacity 0.2s ease;
+}
+
+.sidebar-album-item:hover .album-controls {
+    opacity: 1;
+}
+
+.album-controls .dropdown-menu {
+    display: none;
+    margin-top: 0;
+    position: absolute;
+    right: 0;
+    top: 100%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    min-width: 120px;
+}
+
+.album-controls .dropdown:hover .dropdown-menu {
+    display: block;
 }
 
 .sidebar-album-item:hover {
@@ -643,6 +674,61 @@ body {
 
 .sidebar-album-item.active .album-meta {
     opacity: 0.8;
+}
+
+/* Album Controls Dropdown */
+.album-controls .dropdown:hover .dropdown-menu {
+    display: block;
+    margin-top: 0;
+}
+
+.album-controls .dropdown-menu {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
+    min-width: 120px;
+}
+
+.album-controls .dropdown-menu {
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.5rem;
+    min-width: 120px;
+}
+
+.album-controls .dropdown-item {
+    color: white;
+    padding: 0.5rem 1rem;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-radius: 0.25rem;
+}
+
+.album-controls .dropdown-item:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+}
+
+.album-controls .btn-icon {
+    padding: 0.25rem 0.5rem;
+    color: white;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 0.375rem;
+}
+
+.album-controls .btn-icon:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.album-controls .btn {
+    font-size: 0.875rem;
+    padding: 0.25rem 0.75rem;
 }
 
 /* Scroll Animations */
@@ -729,6 +815,39 @@ body {
     }
 }
 
+/* Modal Delete Button Styles */
+.modal.fade .modal-dialog {
+    z-index: 1080;
+}
+
+.modal.fade .modal-content {
+    margin-top: 30vh;
+    background: rgba(23, 25, 28, 0.9);
+}
+
+.modal.fade .modal-content .btn-danger {
+    background-color: #dc3545;
+    border-color: #dc3545;
+    color: white;
+    opacity: 1 !important;
+    padding: 0.5rem 1.5rem;
+}
+
+.modal.fade .modal-content .btn-danger:hover {
+    background-color: #bb2d3b;
+    border-color: #b02a37;
+}
+
+.modal.fade .modal-content .btn-outline-light {
+    color: white;
+    border-color: rgba(255, 255, 255, 0.5);
+    padding: 0.5rem 1.5rem;
+}
+
+.modal.fade .modal-content .btn-outline-light:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
 /* Image Upload Preview */
 .upload-preview {
     width: 150px;  /* Reduced from 300px */
@@ -766,7 +885,9 @@ body {
 
 /* Authentication Card Animation */
 .auth-card {
-    perspective: 1500px;
+    perspective: 1000px;
+    transition: transform 0.6s;
+    transform-style: preserve-3d;
     min-height: 600px;
     position: relative;
     margin-bottom: 2rem;
@@ -774,6 +895,7 @@ body {
 }
 
 .auth-card.flipped {
+    transform: rotateY(180deg);
     min-height: 650px;
 }
 
@@ -786,6 +908,20 @@ body {
     transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
     backface-visibility: hidden;
     margin: 0;
+    border: none;
+    background: transparent;
+}
+
+.card-front, .card-back {
+    backface-visibility: hidden;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+}
+
+.card-back {
+    transform: rotateY(180deg);
 }
 
 .card-body {
@@ -839,6 +975,20 @@ body {
 
 .auth-card .form-control {
     margin-bottom: 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: #fff;
+}
+
+.auth-card .form-control:focus {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    box-shadow: none;
+}
+
+.auth-card .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .auth-card .form-text {
@@ -923,6 +1073,17 @@ body {
 
 .form-floating > label {
     color: rgba(255, 255, 255, 0.6);
+    top: 59%;
+    left: 1rem;
+    transform: translateY(-50%);
+    padding: 0;
+}
+
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    top: 0;
+    transform: translateY(0);
+    padding: 1rem 0.75rem;
 }
 
 .form-control:-webkit-autofill,
@@ -941,7 +1102,7 @@ body {
 }
 
 .hover-scale {
-    transition: transform 0.2s ease;
+    transition: transform 0.3s ease;
 }
 
 .hover-scale:hover {
@@ -1026,4 +1187,48 @@ body {
 
 .form-floating .input-group .form-control {
     border-right: none;
+}
+
+/* Form floating label behavior */
+.form-floating > .form-control:focus ~ label,
+.form-floating > .form-control:not(:placeholder-shown) ~ label {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+    transition: all 0.2s ease;
+}
+
+/* Ensure proper spacing when label is hidden */
+.form-floating > .form-control {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    height: calc(3.5rem + 2px);
+}
+
+/* Improve placeholder visibility */
+.form-control::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.photo-delete-btn {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 2;
+    background: rgba(220, 53, 69, 0.2);
+    border: 1px solid rgba(220, 53, 69, 0.4);
+    color: #fff;
+    backdrop-filter: blur(4px);
+    padding: 0.25rem 0.5rem;
+}
+
+.photo-card:hover .photo-delete-btn {
+    opacity: 1;
+}
+
+.photo-delete-btn:hover {
+    background: rgba(220, 53, 69, 0.4);
+    border-color: rgba(220, 53, 69, 0.6);
+    color: #fff;
 }

@@ -1,51 +1,89 @@
 {% extends 'albums/base.html' %}
 {% load form_tags %}
+{% load static %}
 
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <div class="card mb-4">
-            <div class="card-body">
-                <h2>{% if form.instance.pk %}Edit Album{% else %}New Album{% endif %}</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {% for field in form %}
-                    <div class="mb-3">
-                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
-                        {{ field.errors }}
-                        {{ field|addclass:'form-control' }}
+        <div class="auth-card">
+            <div class="card glass-effect">
+                <div class="card-body p-lg-5">
+                    <div class="text-center mb-4">
+                        <h2 class="display-6 fw-bold text-white mb-3">{% if form.instance.pk %}Edit Album{% else %}New Album{% endif %}</h2>
+                        <p class="text-light-50 mb-4">{% if form.instance.pk %}Update your album details{% else %}Create a new album for your photos{% endif %}</p>
                     </div>
-                    {% endfor %}
-                    <div class="mt-3">
-                        <button type="submit" class="btn btn-primary">Save</button>
-                        <a href="{% url 'album-list' %}" class="btn btn-secondary">Cancel</a>
-                    </div>
-                </form>
+                    <form method="post">
+                        {% csrf_token %}
+                        {% for field in form %}
+                        <div class="form-group mb-4">
+                            <label for="{{ field.id_for_label }}" class="form-label text-white mb-2">{{ field.label }}</label>
+                            {{ field|addclass:'form-control bg-light-10 border-0 text-white' }}
+                            {% if field.errors %}
+                            <div class="invalid-feedback d-block">
+                                {{ field.errors }}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {% endfor %}
+                        <div class="d-grid gap-2 mt-5">
+                            <button type="submit" class="btn btn-light btn-lg hover-scale">{% if form.instance.pk %}Save Changes{% else %}Create Album{% endif %}</button>
+                            {% if form.instance.pk %}
+                            <button type="button" class="btn btn-danger btn-lg hover-scale" data-bs-toggle="modal" data-bs-target="#deleteModal">
+                                Delete Album
+                            </button>
+                            {% endif %}
+                            <a href="{% url 'album-list' %}" class="btn btn-outline-light">Cancel</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
 
         {% if form.instance.pk %}
-        <h3 class="mb-3">Album Photos</h3>
-        <div class="photo-grid">
-            {% for photo in form.instance.photos.all %}
-            <div class="card">
-                <div class="card-img-container">
-                    <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}">
-                    <a href="{% url 'photo-delete' photo.pk %}" class="btn btn-danger btn-sm position-absolute top-0 end-0 m-2">
-                        <i class="bi bi-trash"></i>
-                    </a>
-                    <div class="card-overlay">
-                        <p class="caption" data-photo-id="{{ photo.pk }}" contenteditable="true">{{ photo.caption }}</p>
+        <!-- Delete Modal -->
+        <div class="modal fade" id="deleteModal" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content glass-effect">
+                    <div class="modal-header border-0">
+                        <h4 class="modal-title text-white" id="deleteModalLabel">Delete</h4>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body p-4 text-center">
+                        <h4 class="text-white mb-3">Delete Album</h4>
+                        <p class="text-light-50">Are you sure you want to delete "{{ form.instance.title }}"? This action cannot be undone.</p>
+                        <div class="d-flex justify-content-center gap-2 mt-4">
+                            <button type="button" class="btn btn-outline-light" data-bs-dismiss="modal">Cancel</button>
+                            <a href="{% url 'album-delete' form.instance.pk %}" class="btn btn-danger">Delete Album</a>
+                        </div>
                     </div>
                 </div>
             </div>
-            {% empty %}
-            <div class="col-12">
-                <div class="alert alert-info">No photos in this album yet.</div>
+        </div>
+        
+        <div class="glass-effect p-4 rounded mt-5">
+            <h3 class="display-6 fw-bold text-white text-center mb-4">Album Photos</h3>
+            <div class="photo-grid">
+                {% for photo in form.instance.photos.all %}
+                <div class="photo-card">
+                    <div class="card-img-container">
+                        <img src="{{ photo.image.url }}" class="card-img-top" alt="{{ photo.caption }}">
+                        <div class="card-overlay">
+                            <p class="caption" data-photo-id="{{ photo.pk }}" contenteditable="true">{{ photo.caption }}</p>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="text-center text-light-50 py-5">
+                    <i class="bi bi-images display-1 mb-3 d-block"></i>
+                    <h3>No photos in this album yet</h3>
+                    <p>Add some photos to get started!</p>
+                </div>
+                {% endfor %}
             </div>
-            {% endfor %}
         </div>
         {% endif %}
     </div>
 </div>
 {% endblock %}
+
+{% block extra_js %}{% endblock %}

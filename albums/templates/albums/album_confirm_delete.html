@@ -3,15 +3,21 @@
 {% block content %}
 <div class="row justify-content-center">
     <div class="col-md-6">
-        <div class="card">
-            <div class="card-body">
-                <h2>Delete Album</h2>
-                <p>Are you sure you want to delete "{{ object.title }}"?</p>
-                <form method="post">
-                    {% csrf_token %}
-                    <button type="submit" class="btn btn-danger">Confirm Delete</button>
-                    <a href="{% url 'album-detail' object.pk %}" class="btn btn-secondary">Cancel</a>
-                </form>
+        <div class="auth-card">
+            <div class="card glass-effect">
+                <div class="card-body p-lg-5">
+                    <div class="text-center mb-4">
+                        <h2 class="display-6 fw-bold text-white mb-3">Delete Album</h2>
+                        <p class="text-light-50 mb-4">Are you sure you want to delete "{{ object.title }}"?</p>
+                    </div>
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg hover-scale">Delete Album</button>
+                            <a href="{% url 'album-detail' object.pk %}" class="btn btn-outline-light">Cancel</a>
+                        </div>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
