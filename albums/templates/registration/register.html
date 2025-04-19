@@ -3,58 +3,131 @@
 {% load static %}
 
 {% block content %}
-<div class="row justify-content-center align-items-center min-vh-100">
-    <div class="col-md-6">
-        <div class="auth-card {% if is_flipped %}flipped{% endif %} glass-effect">
-            <div class="loading-overlay d-none">
-                <div class="spinner-border text-light" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
+<div class="auth-wrapper d-flex align-items-center justify-content-center min-vh-100 py-5">
+    <div class="auth-container">
+        <div class="auth-card glass-effect">
+            <div class="auth-header text-center mb-4">
+                <i class="bi bi-person-plus display-4 auth-icon"></i>
+                <h1 id="register-title" class="auth-title">Create account</h1>
+                <p class="text-light-50">Join our community today</p>
             </div>
-            <div class="card card-front">
-                <div class="card-body p-lg-5">
-                    <div class="text-center mb-4">
-                        <h2 class="display-6 fw-bold text-white mb-3">Create Account</h2>
-                        <p class="text-light-50 mb-4">Join our community today</p>
+            
+            <form method="post" class="needs-validation" novalidate>
+                {% csrf_token %}
+                <div class="row g-3 mb-3">
+                    <div class="col-12">
+                        <div class="floating-input">
+                            <input type="text" 
+                                   name="username" 
+                                   id="id_username" 
+                                   class="form-control" 
+                                   placeholder=" "
+                                   required
+                                   maxlength="150"
+                                   aria-required="true"
+                                   autocomplete="username">
+                            <label for="id_username">Username</label>
+                        </div>
+                        <small class="form-hint">Letters, digits and @/./+/-/_ only</small>
                     </div>
-                    <form method="post" class="needs-validation">
-                        {% csrf_token %}
-                        {% for field in form %}
-                        <div class="form-floating mb-4 position-relative">
-                            <div class="position-relative">
-                                {{ field|addclass:'form-control bg-light-10 border-0 text-white floating-input' }}
-                                {% if 'password1' in field.name or 'password2' in field.name %}
-                                <button type="button" class="btn btn-link position-absolute top-50 end-0 translate-middle-y text-white text-decoration-none pe-3" style="z-index: 5;" onclick="togglePassword(this)">
-                                    <i class="bi bi-eye"></i>
-                                </button>
-                                {% endif %}
-                            </div>
-                            <label for="{{ field.id_for_label }}" class="text-light-50 floating-label">{{ field.label }}</label>
-                            {% if field.errors %}
-                            <div class="invalid-feedback d-block">
-                                {{ field.errors }}
-                            </div>
-                            {% endif %}
-                            {% if field.help_text %}
-                            <small class="form-text text-light-50">{{ field.help_text }}</small>
-                            {% endif %}
+                    <div class="col-12">
+                        <div class="floating-input">
+                            <input type="email" 
+                                   name="email" 
+                                   id="id_email" 
+                                   class="form-control" 
+                                   placeholder=" "
+                                   required
+                                   aria-required="true"
+                                   autocomplete="email">
+                            <label for="id_email">Email</label>
                         </div>
-                        {% endfor %}
-                        <div class="d-grid gap-2 mt-5">
-                            <button type="submit" class="btn btn-light btn-lg hover-scale">Sign Up</button>
+                    </div>
+                    <div class="col-12">
+                        <div class="floating-input">
+                            <input type="password" 
+                                   name="password1" 
+                                   id="id_password1" 
+                                   class="form-control" 
+                                   placeholder=" "
+                                   required
+                                   aria-required="true"
+                                   aria-describedby="password-requirements"
+                                   autocomplete="new-password">
+                            <label for="id_password1">Password</label>
+                            <button type="button" 
+                                    class="password-toggle"
+                                    onclick="togglePassword(this)"
+                                    aria-label="Toggle password visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
                         </div>
-                    </form>
-                    <p class="mt-4 text-center text-light-50">
+                        <div id="password-requirements" class="form-hint">
+                            <ul class="requirements-list">
+                                <li>At least 8 characters</li>
+                                <li>Cannot be entirely numeric</li>
+                                <li>Cannot be too similar to personal info</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-4">
+                        <div class="floating-input">
+                            <input type="password" 
+                                   name="password2" 
+                                   id="id_password2" 
+                                   class="form-control" 
+                                   placeholder=" "
+                                   required
+                                   aria-required="true"
+                                   autocomplete="new-password">
+                            <label for="id_password2">Confirm Password</label>
+                            <button type="button" 
+                                    class="password-toggle"
+                                    onclick="togglePassword(this)"
+                                    aria-label="Toggle password visibility">
+                                <i class="bi bi-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100 mb-3">Create Account</button>
+                
+                <div class="auth-footer text-center">
+                    <p class="mb-0">
                         Already have an account? 
-                        <a href="{% url 'login' %}" class="flip-trigger text-white text-decoration-none">
-                            Login <i class="bi bi-arrow-right-short"></i>
-                        </a>
+                        <a href="{% url 'login' %}" class="link-primary">Sign in</a>
                     </p>
                 </div>
-            </div>
+            </form>
         </div>
     </div>
 </div>
 {% endblock %}
 
-{% block extra_js %}{% endblock %}
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const password1 = document.getElementById('id_password1');
+    const password2 = document.getElementById('id_password2');
+
+    // Custom validation for password match
+    password2.addEventListener('input', function() {
+        if (password1.value !== password2.value) {
+            password2.setCustomValidity("Passwords don't match");
+        } else {
+            password2.setCustomValidity('');
+        }
+    });
+
+    form.addEventListener('submit', function(e) {
+        if (!form.checkValidity()) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        form.classList.add('was-validated');
+    });
+});
+</script>
+{% endblock %}

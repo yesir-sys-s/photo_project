@@ -1,15 +1,17 @@
 {% extends 'albums/base.html' %}
 
 {% block content %}
-<div class="hero-section text-center py-5 mb-4">
-    <h1 class="display-4 fw-bold mb-3">Welcome to Photo Album</h1>
-    <p class="lead mb-5">Your personal space for organizing and sharing memories</p>
-    {% if user.is_authenticated %}
-        <a href="{% url 'album-create' %}" class="btn btn-primary btn-lg px-4 me-2 transition">Create Album</a>
-        <a href="{% url 'album-list' %}" class="btn btn-outline-primary btn-lg px-4 transition">View Albums</a>
-    {% else %}
-        <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 me-2 transition">Login</a>
-        <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg px-4 transition">Sign Up</a>
-    {% endif %}
+<div class="min-vh-100 d-flex align-items-center justify-content-center">
+    <div class="hero-section text-center py-5">
+        <h1 class="display-4 fw-bold mb-3">Welcome to Photo Album</h1>
+        <p class="lead mb-5">Your personal space for organizing and sharing memories</p>
+        {% if user.is_authenticated %}
+            <a href="{% url 'album-create' %}" class="btn btn-primary btn-lg px-4 me-2 transition">Create Album</a>
+            <a href="{% url 'album-list' %}" class="btn btn-outline-primary btn-lg px-4 transition">View Albums</a>
+        {% else %}
+            <a href="{% url 'login' %}" class="btn btn-primary btn-lg px-4 me-2 transition">Login</a>
+            <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg px-4 transition">Sign Up</a>
+        {% endif %}
+    </div>
 </div>
 {% endblock %}

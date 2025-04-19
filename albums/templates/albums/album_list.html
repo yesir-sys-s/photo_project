@@ -6,9 +6,7 @@
     <div class="albums-sidebar">
         <h1 class="mb-4 text-white">My Albums</h1>
         {% for album in object_list %}
-        <div class="sidebar-album-item mb-3 scroll-fade scroll-stagger" 
-             data-album-id="{{ album.pk }}" 
-             style="--scroll-index: {{ forloop.counter0 }}">
+        <div class="sidebar-album-item mb-3" data-album-id="{{ album.pk }}">
             <div class="album-text mb-2">
                 <h5 class="album-name">{{ album.title }}</h5>
                 <p class="album-meta">{{ album.photos.count }} photos</p>
